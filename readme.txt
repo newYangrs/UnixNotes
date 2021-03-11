@@ -12,3 +12,5 @@ This is third dev !
 first commit !
 second add !
 third modify !
+git reset !
+git rest 2 !
