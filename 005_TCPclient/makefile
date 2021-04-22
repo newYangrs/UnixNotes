@@ -13,5 +13,7 @@ $(obj):%.o:%.cpp
 	g++ -c $< -o $@
 
 clean:
-	rm -rf  $(obj) $(out)
+	rm -rf  $(obj) 
 
+clean2:
+	rm -rf *.out
