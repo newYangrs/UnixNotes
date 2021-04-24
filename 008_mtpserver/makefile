@@ -10,7 +10,7 @@ ALL:$(out)	#确定make的最终目标
 	g++ $(obj) -o $@
 
 $(obj):%.o:%.cpp
-	g++ -c $< -o $@
+	g++ -c $< -o $@ -pthread
 
 clean:
 	rm -rf  $(obj) *.out

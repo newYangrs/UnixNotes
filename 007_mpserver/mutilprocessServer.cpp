@@ -8,7 +8,8 @@
 #include<string.h>
 
 void do_sigchild(int num){
-	while(waitpid(0,NULL,WNOHANG) > 0);
+	//while(waitpid(0,NULL,WNOHANG) > 0);
+	wait(NULL);
 }
 
 int main(){
@@ -16,6 +17,8 @@ int main(){
 	act.sa_handler = do_sigchild;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
+	struct sockaddr_in clientAddr;
+	socklen_t clientAddr_len;
 
 	sigaction(SIGCHLD,&act,NULL);
 
@@ -36,16 +39,18 @@ int main(){
 	int cntfd;
 
 	while(1){
-		struct sockaddr_in clientAddr;
 		bzero(&clientAddr,sizeof(clientAddr));
-		socklen_t clientAddr_len = sizeof(clientAddr);
+		clientAddr_len = sizeof(clientAddr);
 
+		printf("\nclientAddr = \n%u\n\n",clientAddr_len);
 		cntfd = accept(lsnfd,(struct sockaddr*)&clientAddr,&clientAddr_len);
 
 		pid = fork();
 
+		static int forkNum = 1;
+		printf("new fork%d\n",forkNum++);
+
 		if(pid == 0){
-			static int forkNum = 1;
 			printf("new fork%d\n",forkNum++);
 			close(lsnfd);	
 			break;
@@ -81,6 +86,7 @@ int main(){
 			cnt++;
 		}
 		close(cntfd);
+		close(5);
 		return 0;
 	}
 
