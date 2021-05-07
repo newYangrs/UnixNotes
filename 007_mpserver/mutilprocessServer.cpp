@@ -8,8 +8,13 @@
 #include<string.h>
 
 void do_sigchild(int num){
-	//while(waitpid(0,NULL,WNOHANG) > 0);
-	wait(NULL);
+	pid_t wpid;
+	while((wpid = waitpid(0,NULL,WNOHANG)) != -1){
+		if(wpid >0 ){
+			printf("waitpid is %d\n",wpid);
+		}	
+	}
+	//wait(NULL);
 }
 
 int main(){

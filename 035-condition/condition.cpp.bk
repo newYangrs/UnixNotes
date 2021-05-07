@@ -1,0 +1,75 @@
+#include<iostream>
+#include<stdio.h>
+#include<unistd.h>
+#include<pthread.h>
+#include<stdlib.h>
+
+using namespace std;
+
+pthread_cond_t isHave = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+struct msg{
+	msg* ne;
+	int num;
+};
+
+struct msg* head = NULL;
+
+void* th_consumer(void*argv){
+	struct msg* mp;
+
+	while(1){
+		pthread_mutex_lock(&mutex);
+		while(head == NULL){
+			pthread_cond_wait(&isHave,&mutex);
+		}
+		mp = head;
+		head = mp->ne;
+		pthread_mutex_unlock(&mutex);
+		printf("---consumer---%lu---%d---\n",pthread_self(),mp->num);
+
+		free(mp);
+		sleep(rand()%3);
+	}
+
+	return NULL;
+}
+
+void* th_producter(void*argv){
+	struct msg* mp;
+
+	while(1){
+		mp = (struct msg*)malloc(sizeof(struct msg));
+		mp->num = rand()%1000+1;
+
+		pthread_mutex_lock(&mutex);
+		mp->ne = head;
+		head = mp;
+		pthread_mutex_unlock(&mutex);
+
+		printf("producter---%lu---%d---\n",pthread_self(),mp->num);
+
+		pthread_cond_broadcast(&isHave);
+		sleep(rand()%3);
+	}
+
+	return NULL;
+}
+
+int main(){
+	srand(time(NULL));
+
+	pthread_t pid[2],cid[2];
+	pthread_create(&cid[0],NULL,th_consumer,NULL);
+	pthread_create(&pid[0],NULL,th_producter,NULL);
+	pthread_create(&cid[1],NULL,th_consumer,NULL);
+	pthread_create(&pid[1],NULL,th_producter,NULL);
+
+	pthread_join(cid[0],NULL);
+	pthread_join(pid[0],NULL);
+	pthread_join(cid[1],NULL);
+	pthread_join(pid[1],NULL);
+
+	return 0;
+}

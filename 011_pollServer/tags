@@ -1,0 +1,9 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+obj	makefile	/^obj = $(patsubst %.cpp,%.o,$(src))	#将src变量中的所有.cpp源文件变成相应的.o文件$/;"	m
+out	makefile	/^out = $(patsubst %.o,%.out,$(obj))$/;"	m
+src	makefile	/^src = $(wildcard .\/*.cpp)	#找到所有的 .cpp 源文件，并将它们存入src变量中$/;"	m
